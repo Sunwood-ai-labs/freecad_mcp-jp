@@ -4,7 +4,7 @@ A FreeCAD addon that implements the Model Context Protocol (MCP) to enable commu
 
 My initial work os based on the  ([Blender MCP Repository](https://github.com/ahujasid/blender-mcp)
 
-<video src=\"https://github.com/bonninr/freecad_mcp/assets/freecad.mp4" controls=\"controls\" style=\"max-width: 730px;\"></video>
+![Sample video: Claude building a little house](.assets/freecad.mp4)
 
 ## Overview
 
