@@ -47,7 +47,7 @@ Configure Claude Desktop to use the FreeCAD MCP bridge by adding the following c
 ```json
 {
   "command": "python",
-  "args": ["freecad_bridge.py"],
+  "args": ["src/freecad_bridge.py"],
   "env": {
     "PYTHONPATH": "C:\\Program Files\\FreeCAD 1.0\\bin"
   }
@@ -86,7 +86,8 @@ freecad-mcp/
 ├── Init.py              # FreeCAD addon initialization
 ├── InitGui.py          # FreeCAD GUI initialization
 ├── addon.py            # Main addon implementation
-├── freecad_bridge.py   # MCP bridge implementation
+├── src/
+│   └── freecad_bridge.py   # MCP bridge implementation
 ├── assets/             # Icons and resources
 └── docs/              # Documentation
 ```
