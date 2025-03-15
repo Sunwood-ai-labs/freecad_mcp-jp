@@ -65,12 +65,36 @@ async def create_part_object(type: str = "Part::Box", name: Optional[str] = None
     if type not in PART_OBJECTS:
         return json.dumps({"status": "error", "message": f"Unsupported object type: {type}"})
     
+    # Convert dimensions dict to list format expected by server
+    dim_list = None
+    if dimensions:
+        if type == "Part::Box":
+            dim_list = [
+                dimensions.get("Length", 10),
+                dimensions.get("Width", 10),
+                dimensions.get("Height", 10)
+            ]
+        elif type == "Part::Sphere":
+            dim_list = [dimensions.get("Radius", 5) * 2]  # Server expects diameter
+        elif type == "Part::Cylinder":
+            dim_list = [
+                dimensions.get("Radius", 5) * 2,  # Server expects diameter
+                0,  # Not used
+                dimensions.get("Height", 10)
+            ]
+        elif type == "Part::Cone":
+            dim_list = [
+                dimensions.get("Radius1", 5) * 2,  # Server expects diameter
+                0,  # Not used
+                dimensions.get("Height", 10)
+            ]
+    
     command = {
-        "type": "create_part_object",
+        "type": "create_object",
         "params": {
             "type": type,
             "name": name,
-            "dimensions": dimensions or {},
+            "dimensions": dim_list or [10, 10, 10],  # Default dimensions
             "position": position,
             "rotation": rotation
         }
@@ -256,16 +280,14 @@ async def create_draft_object(type: str = "Rectangle", name: Optional[str] = Non
 async def modify_object(name: str, 
                        position: Optional[List[float]] = None,
                        rotation: Optional[List[float]] = None,
-                       scale: Optional[List[float]] = None,
-                       properties: Optional[Dict[str, Any]] = None) -> str:
+                       dimensions: Optional[Dict[str, float]] = None) -> str:
     """Modify an existing object's properties.
     
     Args:
         name: Name of the object to modify
         position: New position [x, y, z]
         rotation: New rotation [x, y, z] in degrees
-        scale: Scale factors [x, y, z]
-        properties: Object-specific properties to modify
+        dimensions: Dictionary of dimensions to modify
     """
     command = {
         "type": "modify_object",
@@ -277,10 +299,28 @@ async def modify_object(name: str,
         command["params"]["position"] = position
     if rotation is not None:
         command["params"]["rotation"] = rotation
-    if scale is not None:
-        command["params"]["scale"] = scale
-    if properties is not None:
-        command["params"]["properties"] = properties
+    if dimensions is not None:
+        # Convert dimensions dict to list format
+        obj_info = await get_object_info(name)
+        obj_info = json.loads(obj_info)
+        obj_type = obj_info.get("result", {}).get("type")
+        
+        if obj_type == "Part::Box":
+            command["params"]["dimensions"] = [
+                dimensions.get("Length", obj_info.get("result", {}).get("length", 10)),
+                dimensions.get("Width", obj_info.get("result", {}).get("width", 10)),
+                dimensions.get("Height", obj_info.get("result", {}).get("height", 10))
+            ]
+        elif obj_type == "Part::Sphere":
+            command["params"]["dimensions"] = [
+                dimensions.get("Radius", obj_info.get("result", {}).get("radius", 5)) * 2
+            ]
+        elif obj_type in ["Part::Cylinder", "Part::Cone"]:
+            command["params"]["dimensions"] = [
+                dimensions.get("Radius", obj_info.get("result", {}).get("radius", 5)) * 2,
+                0,
+                dimensions.get("Height", obj_info.get("result", {}).get("height", 10))
+            ]
     
     result = await send_to_freecad(command)
     return json.dumps(result, indent=2)
@@ -388,16 +428,16 @@ async def export_object(name: str, filename: str,
     return json.dumps(result, indent=2)
 
 @mcp.tool()
-async def execute_macro(macro: str) -> str:
-    """Execute a FreeCAD macro.
+async def execute_code(code: str) -> str:
+    """Execute arbitrary Python code in FreeCAD context.
     
     Args:
-        macro: Python code to execute
+        code: Python code to execute
     """
     command = {
-        "type": "execute_macro",
+        "type": "execute_code",
         "params": {
-            "macro": macro
+            "code": code
         }
     }
     result = await send_to_freecad(command)
