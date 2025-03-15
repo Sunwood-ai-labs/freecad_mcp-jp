@@ -2,9 +2,11 @@
 
 A FreeCAD addon that implements the Model Context Protocol (MCP) to enable communication between FreeCAD and Claude AI through Claude Desktop.
 
-My initial work os based on the  ([Blender MCP Repository](https://github.com/ahujasid/blender-mcp)
+My initial work os based on the  [Blender MCP Repository](https://github.com/ahujasid/blender-mcp)
 
-![Sample video: Claude building a little house](https://github.com/bonninr/freecad_mcp/blob/main/assets/freecad.mp4)
+
+https://github.com/user-attachments/assets/5acafa17-4b5b-4fef-9f6c-617e85357d44
+
 
 ## Overview
 
