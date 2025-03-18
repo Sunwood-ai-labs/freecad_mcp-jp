@@ -1,127 +1,94 @@
 # FreeCAD MCP
 
-A FreeCAD addon that implements the Model Context Protocol (MCP) to enable communication between FreeCAD and Claude AI through Claude Desktop.
-
-My initial work os based on the  [Blender MCP Repository](https://github.com/ahujasid/blender-mcp)
-
-
-https://github.com/user-attachments/assets/5acafa17-4b5b-4fef-9f6c-617e85357d44
-
-
 ## Overview
 
-FreeCAD MCP is an addon that allows you to control FreeCAD using natural language through Claude AI. It implements the Model Context Protocol (MCP) to establish a bridge between Claude Desktop and FreeCAD, enabling:
+The FreeCAD MCP (Model Control Protocol) provides a simplified interface for interacting with FreeCAD through a server-client architecture. This allows users to execute commands and retrieve information about the current FreeCAD document and scene.
 
-- Creation and manipulation of 3D objects
-- Parametric modeling operations
-- Document management
-- Export and import operations
-- And more...
-
-## Installation
-
-1. Clone this repository into your FreeCAD Mod directory:
-   ```bash
-   cd ~/.FreeCAD/Mod  # Linux/Mac
-   # or
-   cd %APPDATA%/FreeCAD/Mod  # Windows
-   
-   git clone https://github.com/yourusername/freecad-mcp.git
-   ```
-
-2. Install the required Python packages:
-   ```bash
-   pip install mcp-server
-   ```
-
-3. Restart FreeCAD
-
-## Usage
-
-1. Start FreeCAD
-2. Select the "FreeCAD MCP" workbench from the workbench selector
-3. Click the "Show FreeCAD MCP Panel" button in the toolbar
-4. Click "Start Server" in the panel
-5. Start Claude Desktop with the appropriate configuration
-
-### Claude Desktop Configuration
-
-Configure Claude Desktop to use the FreeCAD MCP bridge by adding the following configuration:
-
-```json
-{
-  "command": "python",
-  "args": ["src/freecad_bridge.py"],
-  "env": {
-    "PYTHONPATH": "C:\\Program Files\\FreeCAD 1.0\\bin"
-  }
-}
-```
+https://github.com/user-attachments/assets/
+5acafa17-4b5b-4fef-9f6c-617e85357d44
 
 ## Features
 
-The addon provides the following main features through the MCP protocol:
 
-### Object Creation
-- Create basic shapes (Box, Cylinder, Sphere, Cone, Torus)
-- Create sketches with various geometric elements
-- Create Draft objects (Rectangle, Circle, Polygon)
+The FreeCAD MCP currently supports the following functionalities:
 
-### Object Manipulation
-- Modify object properties (position, rotation, dimensions)
-- Apply boolean operations (union, cut, intersection)
-- Create fillets and chamfers
-- Create arrays (rectangular and polar)
+### 1. `get_scene_info`
 
-### Sketch Operations
-- Add geometric elements (lines, circles, arcs)
-- Apply constraints (distance, angle, parallel, etc.)
+- **Description**: Retrieves comprehensive information about the current FreeCAD document, including:
+  - Document properties (name, label, filename, object count)
+  - Detailed object information (type, position, rotation, shape properties)
+  - Sketch data (geometry, constraints)
+  - View information (camera position, direction, etc.)
 
-### Document Management
-- Get document and object information
-- Save documents
-- Export objects to various formats (STEP, IGES, STL)
+- **Usage**: This command can be called to get a snapshot of the current state of the FreeCAD environment, which is useful for understanding the context of the model being worked on.
 
-## Development
+### 2. `run_script`
 
-### Project Structure
+- **Description**: Executes arbitrary Python code within the FreeCAD context. This allows users to perform complex operations, create new objects, modify existing ones, and automate tasks using FreeCAD's Python API.
+
+- **Usage**: Users can send a Python script as a string to this command, which will be executed in the FreeCAD environment. This is particularly useful for custom automation and scripting tasks.
+
+### Example Usage
+
+To use the FreeCAD MCP, you can connect to the server and send commands as follows:
+
+```python
+import socket
+import json
+
+# Connect to the FreeCAD MCP server
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(('localhost', 9876))
+
+# Example: Get scene information
+command = {
+    "type": "get_scene_info"
+}
+client.sendall(json.dumps(command).encode('utf-8'))
+
+# Receive the response
+response = client.recv(4096)
+print(json.loads(response.decode('utf-8')))
+
+# Example: Run a script
+script = """
+import FreeCAD
+doc = FreeCAD.ActiveDocument
+box = doc.addObject("Part::Box", "MyBox")
+box.Length = 20
+box.Width = 20
+box.Height = 20
+doc.recompute()
+"""
+command = {
+    "type": "run_script",
+    "params": {
+        "script": script
+    }
+}
+client.sendall(json.dumps(command).encode('utf-8'))
+
+# Receive the response
+response = client.recv(4096)
+print(json.loads(response.decode('utf-8')))
+
+# Close the connection
+client.close()
 ```
-freecad-mcp/
-├── Init.py              # FreeCAD addon initialization
-├── InitGui.py          # FreeCAD GUI initialization
-├── addon.py            # Main addon implementation
-├── src/
-│   └── freecad_bridge.py   # MCP bridge implementation
-├── assets/             # Icons and resources
-└── docs/              # Documentation
-```
 
-### Adding New Features
+## Installation
 
-To add new features:
-
-1. Implement the feature in `addon.py` using FreeCAD's Python API
-2. Add corresponding MCP tool in `freecad_bridge.py`
-3. Update documentation
+1. Clone the repository or download the files.
+2. Place the `freecad_mcp` directory in your FreeCAD modules directory:
+   - Windows: `%APPDATA%/FreeCAD/Mod/`
+   - Linux: `~/.FreeCAD/Mod/`
+   - macOS: `~/Library/Preferences/FreeCAD/Mod/`
+3. Restart FreeCAD and select the "FreeCAD MCP" workbench from the workbench selector.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Feel free to contribute by submitting issues or pull requests. Your feedback and contributions are welcome!
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- FreeCAD development team
-- Model Context Protocol (MCP) developers
-- Claude AI team at Anthropic
-
-## Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Issues](https://github.com/yourusername/freecad-mcp/issues) page
-2. Create a new issue with a detailed description
-3. Join the discussion in the FreeCAD forum
+This project is licensed under the MIT License. See the LICENSE file for details.
