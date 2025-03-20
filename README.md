@@ -4,8 +4,7 @@
 
 The FreeCAD MCP (Model Control Protocol) provides a simplified interface for interacting with FreeCAD through a server-client architecture. This allows users to execute commands and retrieve information about the current FreeCAD document and scene.
 
-https://github.com/user-attachments/assets/
-5acafa17-4b5b-4fef-9f6c-617e85357d44
+https://github.com/user-attachments/assets/5acafa17-4b5b-4fef-9f6c-617e85357d44
 ## Configuration
 
 To configure the MCP server, you can use a JSON format to specify the server settings. Below is an example configuration:
