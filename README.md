@@ -1,4 +1,4 @@
-# FreeCAD MCP
+# FreeCAD MCP (Model Control Protocol)
 
 ## Overview
 
@@ -6,9 +6,77 @@ The FreeCAD MCP (Model Control Protocol) provides a simplified interface for int
 
 https://github.com/user-attachments/assets/
 5acafa17-4b5b-4fef-9f6c-617e85357d44
+## Configuration
+
+To configure the MCP server, you can use a JSON format to specify the server settings. Below is an example configuration:
+
+```json
+{
+    "mcpServers": {
+        "freecad": {
+            "command": "C:\\ProgramData\\anaconda3\\python.exe",
+            "args": [
+                "C:\\Users\\USER\\AppData\\Roaming\\FreeCAD\\Mod\\freecad_mcp\\src\\freecad_bridge.py"
+            ]
+        }
+    }
+}
+```
+
+### Configuration Details
+
+- **command**: The path to the Python executable that will run the FreeCAD MCP server. This can vary based on your operating system:
+  - **Windows**: Typically, it might look like `C:\\ProgramData\\anaconda3\\python.exe` or `C:\\Python39\\python.exe`.
+  - **Linux**: It could be `/usr/bin/python3` or the path to your Python installation.
+  - **macOS**: Usually, it would be `/usr/local/bin/python3` or the path to your Python installation.
+
+- **args**: An array of arguments to pass to the Python command. The first argument should be the path to the `freecad_bridge.py` script, which is responsible for handling the MCP server logic. Make sure to adjust the path according to your installation.
+
+### Example for Different Operating Systems
+
+#### Windows
+```json
+{
+    "mcpServers": {
+        "freecad": {
+            "command": "C:\\ProgramData\\anaconda3\\python.exe",
+            "args": [
+                "C:\\Users\\USER\\AppData\\Roaming\\FreeCAD\\Mod\\freecad_mcp\\src\\freecad_bridge.py"
+            ]
+        }
+    }
+}
+```
+
+#### Linux
+```json
+{
+    "mcpServers": {
+        "freecad": {
+            "command": "/usr/bin/python3",
+            "args": [
+                "/home/USER/.FreeCAD/Mod/freecad_mcp/src/freecad_bridge.py"
+            ]
+        }
+    }
+}
+```
+
+#### macOS
+```json
+{
+    "mcpServers": {
+        "freecad": {
+            "command": "/usr/local/bin/python3",
+            "args": [
+                "/Users/USER/Library/Preferences/FreeCAD/Mod/freecad_mcp/src/freecad_bridge.py"
+            ]
+        }
+    }
+}
+```
 
 ## Features
-
 
 The FreeCAD MCP currently supports the following functionalities:
 
@@ -20,13 +88,9 @@ The FreeCAD MCP currently supports the following functionalities:
   - Sketch data (geometry, constraints)
   - View information (camera position, direction, etc.)
 
-- **Usage**: This command can be called to get a snapshot of the current state of the FreeCAD environment, which is useful for understanding the context of the model being worked on.
-
 ### 2. `run_script`
 
 - **Description**: Executes arbitrary Python code within the FreeCAD context. This allows users to perform complex operations, create new objects, modify existing ones, and automate tasks using FreeCAD's Python API.
-
-- **Usage**: Users can send a Python script as a string to this command, which will be executed in the FreeCAD environment. This is particularly useful for custom automation and scripting tasks.
 
 ### Example Usage
 
