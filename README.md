@@ -1,11 +1,27 @@
-# FreeCAD MCP (Model Control Protocol)
+<p align="center">
+  <img src="assets/header.png" width="100%" />
+</p>
 
-## Overview
+<h1 align="center">FreeCAD MCP (Model Control Protocol)</h1>
+
+<p align="center">
+  <a href="https://www.python.org"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://www.freecad.org"><img src="https://img.shields.io/badge/FreeCAD-000000?style=for-the-badge&logo=freecad&logoColor=white" alt="FreeCAD"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+</p>
+
+<p align="center">
+   <a href="README_JP.md"><img src="https://img.shields.io/badge/ドキュメント-日本語-white.svg" alt="JA doc"/></a>
+   <a href="README.md"><img src="https://img.shields.io/badge/english-document-white.svg" alt="EN doc"></a>
+</p>
+
+## 🌟 Overview
 
 The FreeCAD MCP (Model Control Protocol) provides a simplified interface for interacting with FreeCAD through a server-client architecture. This allows users to execute commands and retrieve information about the current FreeCAD document and scene.
 
 https://github.com/user-attachments/assets/5acafa17-4b5b-4fef-9f6c-617e85357d44
-## Configuration
+
+## ⚙️ Configuration
 
 To configure the MCP server, you can use a JSON format to specify the server settings. Below is an example configuration:
 
@@ -75,7 +91,7 @@ To configure the MCP server, you can use a JSON format to specify the server set
 }
 ```
 
-## Features
+## 🚀 Features
 
 The FreeCAD MCP currently supports the following functionalities:
 
@@ -139,19 +155,27 @@ print(json.loads(response.decode('utf-8')))
 client.close()
 ```
 
-## Installation
+## 🔧 Installation
 
 1. Clone the repository or download the files.
-2. Place the `freecad_mcp` directory in your FreeCAD modules directory:
+2. Install the required Python package:
+   ```bash
+   pip install mcp
+   ```
+3. Place the `freecad_mcp` directory in your FreeCAD modules directory:
    - Windows: `%APPDATA%/FreeCAD/Mod/`
    - Linux: `~/.FreeCAD/Mod/`
    - macOS: `~/Library/Preferences/FreeCAD/Mod/`
-3. Restart FreeCAD and select the "FreeCAD MCP" workbench from the workbench selector.
+4. Find your Python executable path:
+   - Windows: Open Command Prompt and type `where python`
+   - Linux/macOS: Open Terminal and type `which python3`
+   Use this path in your configuration file for the `command` setting.
+5. Restart FreeCAD and select the "FreeCAD MCP" workbench from the workbench selector.
 
-## Contributing
+## 👥 Contributing
 
 Feel free to contribute by submitting issues or pull requests. Your feedback and contributions are welcome!
 
-## License
+## 📝 License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
